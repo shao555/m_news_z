@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cs.mapper.NewsMapper">
+
+    <!--查询所有新闻信息-->
+    <select id="findAllNews" resultType="newsDetail">
+        select * from news_detail order by id desc
+    </select>
+
+    <!--根据分类和标题模糊查询新闻信息-->
+    <select id="findBycateAndtitle" resultType="newsDetail">
+        select * from news_detail
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="categoryId != 0">
+                and categoryId = #{categoryId}
+            </if>
+            <if test="title != null">
+                and title like concat ('%',#{title},'%')
+            </if>
+        </trim>
+        order by id desc
+    </select>
+
+    <!--修改新闻信息-->
+    <update id="updateNews" parameterType="newsDetail">
+        update news_detail
+         set categoryId = #{categoryId},title = #{title}
+        ,summary = #{summary},author = #{author}
+        where id = #{id}
+    </update>
+
+    <!--根据id查询新闻-->
+    <select id="findById" resultType="newsDetail">
+        select * from news_detail where id=#{id}
+    </select>
+
+    <!--查询所有新闻分类信息-->
+    <select id="NewsMapper" resultType="newsDetail">
+        select categoryId from news_detail
+    </select>
+
+    <!--根据标题查询新闻-->
+    <select id="checkTitle" resultType="newsDetail">
+        SELECT * FROM news_detail WHERE title = #{title}
+    </select>
+
+    <!--根据新闻标题查询新闻记录数-->
+    <select id="findCountByTitle" resultType="int">
+        select count(*) from news_detail
+                <trim prefix="where" prefixOverrides="and | or">
+                    <if test="title != null">
+                        and title like concat ('%',#{title},'%')
+                    </if>
+                </trim>
+    </select>
+
+</mapper>
